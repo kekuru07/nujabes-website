@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>to: nujabes</title>
+
+  <!-- Link to the main CSS file for the page styling -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/homepage.css') }}">
+  <!-- Link to the accessibility CSS file for accessibility features -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/accessibility.css') }}">
+  <!-- Link to the favicon image that appears on the browser tab -->
+  <link rel="icon" href="../static/images/favicon.jpg" type="image/jpg">
+  <!-- Link to the web app manifest file for defining app settings -->
+  <link rel="manifest" href="/static/manifest.json">
+</head>
+
+<body>
+
+  <!-- Section for fog background and animations -->
+  <section class="fog">
+    <div class="absolute-bg"></div>
+    <div class="fog-container">
+      <!-- Background images with animation effects for the fog effect -->
+      <div class="fog-img fog-img-first"></div>
+      <div class="fog-img fog-img-second"></div>
+    </div>
+
+    <div class="title">
+      <!-- Title with class for slide-in animation -->
+      <h1 class="slide-text floating">nujabes</h1>
+      <!-- Image for the title, using Flask's url_for to properly link to static images -->
+      <img class="slide-image floating" src="{{ url_for('static', filename='images/nujabes-homepage.jpg') }}">
+    </div>
+  </section>
+
+  <!-- Navbar for page navigation links -->
+  <nav class="navbar">
+    <a href="/" class="nav-link">home</a>
+    <a href="/discography" class="nav-link">discography</a>
+    <a href="/accessibility" class="nav-link">accessibility</a>
+  </nav>
+
+  <!-- JavaScript file for additional interactive functionality -->
+  <script src="{{ url_for('static', filename='styles/js/script.js') }}"></script>
+  <!-- JavaScript file for accessibility features -->
+  <script src="../static/styles/js/accessibility.js"></script>
+
+  <script>
+    // Registering a service worker for offline functionality
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+  </script>
+
+</body>
+
+</html>

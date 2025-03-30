@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>{{ album.album_name }} | nujabes</title>
+
+  <!-- External CSS files for styling -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/albumpage.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/accessibility.css') }}">
+
+  <!-- Favicon image and manifest link -->
+  <link rel="icon" href="../static/images/favicon.jpg" type="image/jpg">
+  <link rel="manifest" href="/static/manifest.json">
+</head>
+
+<body>
+
+  <!-- Album cover and details -->
+  <div class="album-container">
+    <!-- Fixed the image path with url_for for dynamic path resolution -->
+    <img src="{{ url_for('static', filename= 'i'+album.image_path.lstrip('static/')) }}" class="album-cover" alt="{{ album.album_name }}">
+    <h1>{{ album.album_name }}</h1>
+    <p>Released: {{ album.release_year }}</p>
+    <!-- Link to listen to album on Spotify -->
+    <a href="{{ album.spotify_link }}" target="_blank">Listen on Spotify</a>
+  </div>
+
+  <!-- Background images with fog effect -->
+
+
+  <!-- Tracklist section -->
+  <div class="songs">
+    <h2>Tracklist</h2>
+    
+    <!-- Dropdown to sort songs -->
+    <label for="sortSongs">Sort By:</label>
+    <select id="sortSongs" onchange="fetchSortedSongs()">
+        <option value="default">Default Order</option>
+        <option value="titleAsc">Title (A-Z)</option>
+        <option value="titleDesc">Title (Z-A)</option>
+        <option value="artistAsc">Artist (A-Z)</option>
+        <option value="artistDesc">Artist (Z-A)</option>
+    </select>
+    
+    <!-- List to display songs dynamically -->
+    <ul id="song-list">
+        {% for song in songs %}
+        <li>
+            <strong>{{ song.title }}</strong> - {{ song.artists }} ({{ song.duration }})
+            <a href="{{ song.spotify_link }}" target="_blank">▶ Play</a>
+        </li>
+        {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Reviews and Rating Section -->
+  <div class="reviews">
+    <h2>Rate This Album</h2>
+    
+    <!-- Star rating system -->
+    <div class="star-rating">
+      <span data-value="1">★</span>
+      <span data-value="2">★</span>
+      <span data-value="3">★</span>
+      <span data-value="4">★</span>
+      <span data-value="5">★</span>
+    </div>
+    
+    <!-- Input fields for name and comment -->
+    <input type="text" id="username" placeholder="Your name">
+    <textarea id="comment" placeholder="Write a review..."></textarea>
+    
+    <!-- Submit button to post review -->
+    <button onclick="submitReview()">Submit</button>
+
+    <h3>Reviews</h3>
+    <!-- List to display existing reviews dynamically -->
+    <ul id="review-list"></ul>
+  </div>
+
+  <!-- Navigation bar links -->
+  <nav class="navbar">
+    <a href="/" class="nav-link">home</a>
+    <a href="/discography" class="nav-link">discography</a>
+    <a href="/accessibility" class="nav-link">accessibility</a>
+  </nav>
+
+  <!-- JavaScript to handle sorting of songs -->
+  <script>
+    function fetchSortedSongs() {
+      let albumId = "{{ album.album_id }}"; // Album ID from Flask
+      let sortOrder = document.getElementById("sortSongs").value;
+
+      console.log("Fetching songs with sort order:", sortOrder); // Debug log
+
+      // Fetching sorted songs from API
+      fetch(`/api/songs/${albumId}/${sortOrder}`)
+        .then(response => response.json())
+        .then(songs => {
+          console.log("API Response:", songs); // Log response to debug
+
+          if (!Array.isArray(songs)) {
+              console.error("Error: API did not return an array. Response:", songs);
+              return;
+          }
+
+          // Clear current song list and append the sorted songs
+          const songList = document.getElementById("song-list");
+          songList.innerHTML = ""; // Clear existing list
+
+          songs.forEach(song => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+              <strong>${song.title}</strong> - ${song.artists} (${song.duration})
+              <a href="${song.spotify_link}" target="_blank">▶ Play</a>
+            `;
+            songList.appendChild(li);
+          });
+        })
+        .catch(error => console.error("Error fetching songs:", error));
+    }
+
+    // Initial load with default sorting
+    fetchSortedSongs();
+  </script>
+
+  <!-- JavaScript to handle reviews functionality -->
+  <script>
+    let albumId = "{{ album.album_id }}";
+
+    // Load reviews from the server
+    function fetchReviews() {
+      fetch(`/api/reviews/${albumId}`)
+        .then(response => response.json())
+        .then(reviews => {
+          let reviewList = document.getElementById("review-list");
+          reviewList.innerHTML = "";
+          reviews.forEach(review => {
+            let li = document.createElement("li");
+            li.innerHTML = `<strong>${review.username}</strong> - ${'★'.repeat(review.rating)}
+                            <p>${review.comment}</p>`;
+            reviewList.appendChild(li);
+          });
+        });
+    }
+
+    // Submit review to the server
+    function submitReview() {
+      let username = document.getElementById("username").value;
+      let comment = document.getElementById("comment").value;
+      let rating = document.querySelector(".star-rating .selected")?.getAttribute("data-value") || 0;
+
+      // Check if all fields are filled
+      if (!username || !comment || rating == 0) {
+        alert("Please enter a name, rating, and comment.");
+        return;
+      }
+
+      // Post review to API
+      fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ album_id: albumId, username, rating, comment })
+      }).then(response => response.json())
+        .then(() => { fetchReviews(); })
+        .catch(error => console.error("Error:", error));
+    }
+
+    // Event listener to handle star rating selection
+    document.querySelectorAll(".star-rating span").forEach(star => {
+      star.addEventListener("click", function () {
+        document.querySelectorAll(".star-rating span").forEach(s => s.classList.remove("selected"));
+        this.classList.add("selected");
+      });
+    });
+
+    // Load reviews on page load
+    fetchReviews();
+  </script>
+
+
+  <!-- External JavaScript files -->
+  <script src="../static/styles/js/script.js"></script>
+  <script src="../static/styles/js/accessibility.js"></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+  </script>
+
+</body>
+
+</html>

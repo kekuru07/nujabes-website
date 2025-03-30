@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>to: nujabes</title>
+  
+  <!-- Link to the CSS file for discography page styling -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/discography.css') }}">
+  <!-- Link to the accessibility CSS file for accessibility features -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/accessibility.css') }}">
+  <!-- Link to the favicon image that appears on the browser tab -->
+  <link rel="icon" href="../static/images/favicon.jpg" type="image/jpg">
+  <!-- Link to the web app manifest file for defining app settings -->
+  <link rel="manifest" href="/static/manifest.json">
+</head>
+
+<body>
+  <!-- Navbar for page navigation links -->
+  <nav class="navbar">
+    <a href="/" class="nav-link">home</a>
+    <a href="/discography" class="nav-link">discography</a>
+    <a href="/accessibility" class="nav-link">accessibility</a>
+  </nav>
+  
+  <!-- Container for fog background images with animation effects -->
+  <div class="fog-container">
+    <div class="fog-img fog-img-first"></div>
+    <div class="fog-img fog-img-second"></div>
+  </div>
+
+  <!-- Artist image in the top left corner -->
+  <div id="artist-container">
+    <img id="artist-image" src="../static/images/nujabes-homepage.jpg" alt="Artist Image" />
+  </div>
+
+  <!-- Content container that holds albums and dropdown sorting menu -->
+  <div id="content-container">
+    <!-- Dropdown menu for sorting albums -->
+    <select id="sortDropdown" onchange="fetchSortedAlbums()">
+      <option value="year">Sort by Year (Newest)</option>
+      <option value="nameAsc">Sort A-Z</option>
+      <option value="nameDesc">Sort Z-A</option>
+      <option value="rating">Highest Rating</option>
+    </select>
+
+    <!-- Scrollable albums container where album data will be displayed -->
+    <div id="albums-container">Loading albums...</div>
+  </div>
+
+  <!-- Script to handle fetching and displaying albums based on selected sort option -->
+  <script>
+    function fetchSortedAlbums() {
+      let sortOrder = document.getElementById("sortDropdown").value;
+
+      // Change the API endpoint based on the selected sort option
+      let apiUrl = `/api/albums/sorted-${sortOrder}`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(albums => {
+          const container = document.getElementById("albums-container");
+          container.innerHTML = ""; // Clear existing albums
+
+          // Loop through the albums and create HTML elements for each
+          albums.forEach(album => {
+            const albumDiv = document.createElement("div");
+            albumDiv.className = "album";
+            albumDiv.innerHTML = `
+              <img src="${album.image_path}" alt="${album.album_name}">
+              <h3>${album.album_name}</h3>
+              <p>Released: ${album.release_year}</p>
+              <p>Rating: ${album.avg_rating} ★</p>
+            `;
+
+            // Redirect to the album's page when clicked
+            albumDiv.onclick = () => {
+              window.location.href = `/album/${album.id}`;
+            };
+
+            container.appendChild(albumDiv);
+          });
+        })
+        .catch(error => console.error("Error fetching albums:", error));
+    }
+
+    // Initial load with default sorting option
+    fetchSortedAlbums();
+  </script>
+
+  <!-- External JavaScript files -->
+  <script src="../static/styles/js/script.js"></script>
+  <script src="../static/styles/js/accessibility.js"></script>
+
+  <!-- Service worker registration for offline functionality -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+  </script>
+</body>
+</html>

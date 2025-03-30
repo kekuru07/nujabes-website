@@ -1,0 +1,22 @@
+.greyscale {
+    filter: grayscale(100%);
+}
+
+/* Apply grayscale to the whole page */
+html.greyscale, body.greyscale {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+
+.dyslexia-font {
+    font-family: 'OpenDyslexic', Arial, sans-serif;
+}
+
+.large-text {
+    font-size: 1.5em;
+}
+
+.xlarge-text {
+    font-size: 2em;
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>Accessibility Settings</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/accessibility.css') }}">
+  <link rel="icon" href="../static/images/favicon.jpg" type="image/jpg">
+  <link rel="manifest" href="/static/manifest.json">
+  
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="nav-link">home</a>
+    <a href="/discography" class="nav-link">discography</a>
+    <a href="/accessibility" class="nav-link">accessibility</a>
+  </nav>
+
+  <section class="accessibility-settings">
+    <h1>Accessibility Settings</h1>
+
+    <!-- Text Size Controls -->
+    <label for="textSize">Text Size:</label>
+    <select id="textSize" onchange="changeTextSize()">
+      <option value="normal">Normal</option>
+      <option value="large">Large</option>
+      <option value="xlarge">Extra Large</option>
+    </select>
+
+    <!-- High Contrast Mode -->
+    <button id="grayscaleToggle">Enable Grayscale Mode</button>
+
+    <!-- Dyslexia Friendly Font -->
+    <label for="dyslexiaFont">Dyslexia-Friendly Font:</label>
+    <input type="checkbox" id="dyslexiaFont" onchange="toggleDyslexiaFont()">
+  </section>
+
+  <script src="../static/styles/js/accessibility.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+  </script>
+</body>
+
+</html>

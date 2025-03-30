@@ -1,0 +1,209 @@
+/* Reset margins and padding for the entire page */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Background setup */
+.absolute-bg {
+  position: absolute;
+  filter: brightness(0.8) contrast(1.2); /* Adjust brightness and contrast */
+  opacity: 100%; /* Full opacity */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 0; /* Place below other content */
+  background: 
+    radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.9) 100%), /* Fading gradient effect */
+    url("../images/nujabes-wallpaper.jpg"); /* Background image */
+  box-shadow: inset 0px 0px 85px rgba(0, 0, 0, 0.4); /* Shadow effect inside the background */
+  background-position: 50%; /* Center background image */
+  background-repeat: no-repeat; /* Prevent background from repeating */
+  background-size: cover; /* Make background cover entire area */
+  overflow: hidden; /* Hide any overflowed content */
+}
+
+/* Title container */
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centering the title */
+}
+
+/* Title text styling */
+.title > h1 {
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 5rem;
+  letter-spacing: 1px; /* Slight space between letters */
+}
+
+/* Fog container styles */
+.fog {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  background: #fff;
+}
+
+/* Fog image container to position fog layers */
+.fog-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1; /* Keep fog above background */
+}
+
+/* Fog images' general setup */
+.fog-img {
+  position: absolute;
+  height: 100vh;
+  width: 300vw; /* Make the fog images wide to create smooth scrolling effect */
+  z-index: 2;
+}
+
+/* First fog layer */
+.fog-img-first {
+  background: url("../images/fog-1.png");
+  background-repeat: repeat-x; /* Repeat horizontally */
+  background-size: contain;
+  background-position: center;
+  animation: marquee 60s linear infinite; /* Continuous left to right animation */
+}
+
+/* Second fog layer with different animation speed */
+.fog-img-second {
+  background: url("../images/fog-2.png");
+  background-repeat: repeat-x;
+  background-size: contain;
+  background-position: center;
+  animation: marquee 30s linear infinite; /* Faster animation for the second layer */
+}
+
+/* Animation for the fog layers to move across the screen */
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0); /* Start at the initial position */
+  }
+  100% {
+    transform: translate3d(-200vw, 0, 0); /* Move the fog left */
+  }
+}
+
+/* Navbar container with flexbox */
+.navbar {
+  display: flex;
+  gap: 20px;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 10px;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%); /* Center navbar */
+  z-index: 100; /* Keep navbar above other content */
+}
+
+/* Navbar link styling */
+.nav-link {
+  color: white;
+  font-size: 25px;
+  text-decoration: none;
+  padding: 10px 15px;
+  transition: text-shadow 0.6s ease-in-out, color 0.6s ease-in-out; /* Smooth transition on hover */
+}
+
+/* Navbar link hover effect with glowing text */
+.nav-link:hover {
+  color: #fff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 
+               0 0 12px rgba(255, 255, 255, 0.5); /* Glow effect on hover */
+  
+  animation: ethereal-float 2s ease-in-out infinite alternate; /* Floating animation */
+}
+
+/* Soft floating motion for navbar links */
+@keyframes ethereal-float {
+  0% {
+    transform: translateY(0px) rotate(0deg); /* No movement initially */
+    filter: blur(0px);
+  }
+  50% {
+    transform: translateY(-2px) rotate(-0.3deg); /* Slight upward movement */
+    filter: blur(0.4px);
+  }
+  100% {
+    transform: translateY(2px) rotate(0.3deg); /* Slight downward movement */
+    filter: blur(0px);
+  }
+}
+
+/* Title image styling */
+.title img {
+  width: 300px; /* Adjust image size */
+  height: auto;
+  border-radius: 20px; /* Rounded corners */
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 
+              0 0 12px rgba(255, 255, 255, 0.5); /* Glowing shadow effect */
+}
+
+/* Title text over image */
+.title h1 {
+  font-size: 5rem;
+  color: white;
+  position: absolute;
+  opacity: 80%; /* Slight transparency */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the text */
+  white-space: nowrap; /* Prevent text from breaking */
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 
+               0 0 12px rgba(255, 255, 255, 0.5); /* Glowing shadow effect */
+}
+
+/* Animations for sliding the text and image */
+@keyframes slideLeft {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-100px, 0); }
+}
+
+@keyframes slideRight {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(100px, 0); }
+}
+
+/* Apply slide animations */
+.slide-text {
+  animation: slideRight 3s ease-in-out forwards; /* Slide text to the right */
+}
+
+.slide-image {
+  animation: slideLeft 3s ease-in-out forwards; /* Slide image to the left */
+}
+
+/* Glowing effect animation */
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 
+                 0 0 10px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
+                 0 0 20px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 
+                 0 0 10px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+}
